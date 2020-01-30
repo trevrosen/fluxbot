@@ -10,10 +10,15 @@ build_and_run: run
 
 run:
 	docker run -it \
-		--env HUBOT_NAME=$(robot_name) \
-		--env HUBOT_DESCRIPTION=$(robot_description) \
+		-e HUBOT_NAME=$(robot_name) \
+		-e HUBOT_DESCRIPTION=$(robot_description) \
 		$(repo_owner)/$(repo_name)
 
 build:
-	docker build -t $(repo_owner)/fluxbot:latest .
+	docker build -t $(repo_owner)/$(repo_name):latest .
 
+push:
+	docker push $(repo_owner)/$(repo_name):latest
+
+debug:
+	kubectl run -i --tty --rm $(repo_name)-debug --image=$(repo_owner)/$(repo_name):latest --restart=Never

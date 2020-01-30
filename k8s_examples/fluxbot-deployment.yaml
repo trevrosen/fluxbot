@@ -21,8 +21,9 @@ spec:
       containers:
         - name: fluxbot
           image: trevrosen/fluxbot:latest
-          command: ["bin/hubot"]
           env:
             - name: REDIS_URL
               value: "redis:6379"
+            - name: HUBOT_NAME
+              value: "k8stestbot"
       
