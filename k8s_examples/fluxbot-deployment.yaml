@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fluxbot
+  labels:
+    app.kubernetes.io.name: fluxbot
+    app.kubernetes.io.component: chat-ops
+    app.kubernetes.io.part-of: fluxbot
+  namespace: flux
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: fluxbot
+  template:
+    metadata:
+      labels:
+        app: fluxbot
+        component: chat-ops
+    spec:
+      containers:
+        - name: fluxbot
+          image: trevrosen/fluxbot:latest
+          command: ["bin/hubot"]
+          env:
+            - name: REDIS_URL
+              value: "redis:6379"
+      

@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redis
+  labels:
+    app.kubernetes.io.name: redis
+    app.kubernetes.io.component: chat-ops
+    app.kubernetes.io.part-of: fluxbot
+  namespace: flux
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: redis
+  template:
+    metadata:
+      labels:
+        app: redis
+        component: chat-ops
+    spec:
+      containers:
+        - name: redis
+          image: redis
+      
