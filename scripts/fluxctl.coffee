@@ -1,8 +1,6 @@
 # Description:
 #  Fluxctl commands
 
-# TODO: consume ECR repo prefix from env
-
 module.exports = (robot) ->
   
   #
