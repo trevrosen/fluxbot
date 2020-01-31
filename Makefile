@@ -1,4 +1,4 @@
-.PHONY: docker-build
+.PHONY: build run build_and_run push debug
 
 repo_owner:=trevrosen
 repo_name:=fluxbot

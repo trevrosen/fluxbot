@@ -9,7 +9,7 @@ COPY scripts/fluxctl.coffee scripts
 ENV HUBOT_NAME "fluxbot"
 
 ENTRYPOINT ["./entrypoint.sh"]
-#CMD ["--name", "fluxbot", "--adapter", "slack"]
+CMD ["--name", "fluxbot", "--adapter", "slack"]
 
 # TODO: make it respect $HUBOT_NAME instead of inserting it as a literatl
-CMD ["--name", "fluxbot"]
+#CMD ["--name", "fluxbot"]
