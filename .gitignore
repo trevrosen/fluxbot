@@ -1,1 +1,9 @@
 .DS_Store*
+.editorconfig
+Procfile
+external-scripts.json
+hubot-scripts.json
+node_modules/
+package-lock.json
+package.json
+.hubot_history
