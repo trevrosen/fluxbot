@@ -57,7 +57,7 @@ module.exports = (robot) ->
 
     @spawn = require('child_process').spawn
 
-    msg.send "Calling fluxctl with args: '#{args}'"
+    msg.send "Running: fluxctl #{args}"
 
     cmd = @spawn("fluxctl", args)
 
