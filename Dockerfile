@@ -4,7 +4,7 @@ COPY bin/fluxctl /usr/bin
 RUN chmod +x /usr/bin/fluxctl
 
 USER hubot
-COPY scripts/fluxctl.coffee scripts
+COPY scripts/fluxctl.js scripts
 
 ENV HUBOT_NAME "fluxbot"
 
