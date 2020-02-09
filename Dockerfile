@@ -1,6 +1,7 @@
 FROM minddocdev/hubot
 USER root
-COPY bin/fluxctl /usr/bin
+RUN apk add curl
+RUN curl -Lo /usr/bin/fluxctl https://github.com/fluxcd/flux/releases/download/1.18.0/fluxctl_linux_amd64
 RUN chmod +x /usr/bin/fluxctl
 
 USER hubot
@@ -9,8 +10,4 @@ COPY scripts/fluxctl.js scripts
 ENV HUBOT_NAME "fluxbot"
 
 ENTRYPOINT ["./entrypoint.sh"]
-# TODO: make it respect $HUBOT_NAME instead of inserting it as a literatl
 CMD ["--name", "fluxbot", "--adapter", "slack"]
-
-# Comment out the above and uncomment the below to run in console mode
-#CMD ["--name", "fluxbot"]
