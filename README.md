@@ -2,10 +2,10 @@
 A Hubot-based chatbot for driving [FluxCD](https://fluxcd.io)'s `fluxctl`
 
 ## Project Status
-This is a WORK IN PROGRESS. There's currently no tests or CI. I despise NodeJS, so the code is really dumb at the moment while I grudgingly learn the right way to do things. It's opinionated right now on where you put your flux install, your container registry, and your deployable workloads. It will get better over time, but you may never love it.
+This is a WORK IN PROGRESS. There's currently no tests or CI. The code is dumb at the moment. It's annoyingly opinionated right now on where you put your flux install, your container registry, and your deployable workloads. It will get better over time, but you may never love it.
 
 ## Why does this exist
-To give "chat ops with guardrails" to developers who need control over which image a workload is running at a given time but who can't/shouldn't access other things in the cluster.
+To allow Kubernetes operators to provide a "chat ops with guardrails" functionality to developers who need control over which image a workload is running at a given time but who can't/shouldn't access other things in the cluster.
 
 ## What can this do
 
