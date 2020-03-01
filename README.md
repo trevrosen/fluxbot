@@ -9,7 +9,7 @@ To allow Kubernetes admins to provide a "chat ops with guardrails" functionality
 
 ## What can this do
 
-* `fluxbot workloads [NAMESPACE]` shows all workloads in the namespace (on-demand namespace coming soon)
+* `fluxbot workloads [NAMESPACE]` shows all workloads in the namespace
 * `fluxbot images [NAMESPACE]` issues `fluxctl list-images -n [NAMESPACE]`
 * `fluxbot deploy [NAMESPACE] [WORKLOAD NAME] [IMAGE PATH] [IMAGE TAG]` issues an opinionated `fluxctl release`
 
