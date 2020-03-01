@@ -1,18 +1,22 @@
-/*
- * decaffeinate suggestions:
- * DS102: Remove unnecessary code created because of implicit returns
- * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
- */
 // Description:
-//  Fluxctl commands
-
+//    Provides access to fluxctl list-images, list-workloads, and release on a whitelist of namespaces
+//
+// Configuration:
+//    FLUXBOT_ALLOWED_NAMESPACES=namespace1,namespace2
+//    
+//
+// Commands:
+//    fluxbot workloads [NAMESPACE]
+//    fluxbot images [NAMESPACE]
+//    fluxbot deploy [NAMESPACE] [DEPLOYMENT_NAME] [IMAGE_REPO_NAME] [IMAGE_TAG]
+//
 module.exports = function(robot) {
   var allowed_namespaces
   const default_namespace = "default" // not really useful
 
   // All commands will respect a whitelist of namespaces from env
-  if (process.env.ALLOWED_NAMESPACES) {
-    allowed_namespaces = process.env.ALLOWED_NAMESPACES.split(',')
+  if (process.env.FLUXBOT_ALLOWED_NAMESPACES) {
+    allowed_namespaces = process.env.FLUXBOT_ALLOWED_NAMESPACES.split(',')
   }else{
     allowed_namespaces = default_namespace
   }

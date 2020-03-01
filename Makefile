@@ -26,4 +26,4 @@ push:
 debug:
 	run -i --tty --rm $(repo_name)-debug --image=$(repo_owner)/$(repo_name):latest --restart=Never
 run_local:
-	ALLOWED_NAMESPACES=$(allowed_namespaces) ./bin/hubot
+	FLUXBOT_ALLOWED_NAMESPACES=$(allowed_namespaces) ./bin/hubot
