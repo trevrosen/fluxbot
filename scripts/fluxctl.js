@@ -7,25 +7,65 @@
 //  Fluxctl commands
 
 module.exports = function(robot) {
-  
+  var allowed_namespaces
+  const default_namespace = "default" // not really useful
+
+  // All commands will respect a whitelist of namespaces from env
+  if (process.env.ALLOWED_NAMESPACES) {
+    allowed_namespaces = process.env.ALLOWED_NAMESPACES.split(',')
+  }else{
+    allowed_namespaces = default_namespace
+  }
+
+
   //
-  // Hardcoded to the ns we're using for all dev-controlled workloads
-  // TODO: evolve this to allow arguments when we can figure out how to make those arguments safe
-  robot.respond(/workloads/i, function(msg) {
-    const ns = !process.env.APPLICATION_NAMESPACE ? "applications" : process.env.APPLICATION_NAMESPACE;
+  // Returns the namespaces that this Fluxbot will deal with
+  //
+  robot.respond(/list namespaces/i, function(msg) {
+    msg.send(typeof(allowed_namespaces))
+  })
 
-    this.exec = require('child_process').exec;
-    const cmd = `fluxctl --k8s-fwd-ns=flux list-workloads -n ${ns}`;
-    msg.send(`Running [${cmd}]`);
+  //
+  // workloads provides all workloads in the given namespace
+  //
+  robot.respond(/workloads\s*(\w+)?$/i, function(msg) {
+    args =  ["--k8s-fwd-ns=flux", "list-workloads"]
 
-    return this.exec(cmd, function(error, stdout, stderr) {
-      if (error) {
-        msg.send(error);
-        return msg.send(stderr);
-      } else {
-        return msg.send(stdout);
+    var namespace = msg.match[1]
+
+    if (namespace != undefined) {
+      if (allowed_namespaces.includes(namespace)) {
+        args.push("-n")
+        args.push(`${msg.match[1]}`)
+      }else{
+        msg.send(`Namespace "${namespace}" is not managed by this Fluxbot`)
+        return
+      }    
+    }else{
+      msg.send("Usage: 'workloads [NAMESPACE]'")
+      return
+    }
+
+
+    this.spawn = require('child_process').spawn;
+    msg.send(`Running [${args}]`);
+
+    const cmd = this.spawn("fluxctl", args);
+
+    cmd.stdout.on('data', data => {
+      msg.send(data)
+    });
+
+    cmd.stderr.on('data', data => {
+      msg.send(data)
+    });
+
+    return cmd.on('close', function(code) {
+      if (Number(code) > 0) {
+        return msg.send(`fluxctl exited with non-zero code: ${code}`);
       }
     });
+
   });
 
   //
@@ -72,18 +112,25 @@ module.exports = function(robot) {
 
     const cmd = this.spawn("fluxctl", args);
 
-    cmd.stdout.on('data', data => msg.send(data));
+    cmd.stdout.on('data', data => {
+      console.out("in stdout")
+      msg.send(data)
+    });
 
-    cmd.stderr.on('data', data => msg.send(data));
+    cmd.stderr.on('data', data => {
+      console.out("in stderr")
+      msg.send(data)
+    });
 
     return cmd.on('close', function(code) {
+      console.log(`Exit was ${code}`)
       if (Number(code) > 0) {
         return msg.send(`fluxctl exited with non-zero code: ${code}`);
       }
     });
   });
 };
-      
+
 
 
 

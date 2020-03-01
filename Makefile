@@ -5,6 +5,9 @@ repo_name:=fluxbot
 robot_name:=fluxbot
 robot_description:="A Hubot to control FluxCD"
 
+# Namespaces that Fluxbot will allow commands to
+allowed_namespaces:="demo,flux"
+
 build_and_run: build
 build_and_run: run
 
@@ -21,4 +24,6 @@ push:
 	docker push $(repo_owner)/$(repo_name):latest
 
 debug:
-	kubectl run -i --tty --rm $(repo_name)-debug --image=$(repo_owner)/$(repo_name):latest --restart=Never
+	run -i --tty --rm $(repo_name)-debug --image=$(repo_owner)/$(repo_name):latest --restart=Never
+run_local:
+	ALLOWED_NAMESPACES=$(allowed_namespaces) ./bin/hubot
