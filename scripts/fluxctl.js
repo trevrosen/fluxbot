@@ -3,6 +3,7 @@
 //
 // Configuration:
 //    FLUXBOT_ALLOWED_NAMESPACES=namespace1,namespace2
+//    FLUXBOT_REPO_PREFIX=[ECR URL FRAGMENT OR DOCKER HUB ORG NAME]
 //    
 //
 // Commands:
@@ -116,19 +117,20 @@ module.exports = function(robot) {
 
   //
   // Calls `fluxctl release` to update a given workload to a given image with a given tag
-  //   - match[1] -- workload name with "deployment" assumed
-  //   - match[2] -- image name without ECR prefix
-  //   - match[3] -- image tag (e.g. 1.2.3)
+  //   - match[1] -- namespace name
+  //   - match[2] -- workload name with "deployment" assumed
+  //   - match[3] -- image name without ECR prefix
+  //   - match[4] -- image tag (e.g. 1.2.3)
   return robot.respond(/deploy (.*) (.*) (.*)/i, function(msg) {
-    const ns = !process.env.APPLICATION_NAMESPACE ? "applications" : process.env.APPLICATION_NAMESPACE;
-    const ecrPrefix = process.env.ECR_PREFIX;
+    const repoPrefix = process.env.FLUXBOT_REPO_PREFIX;
 
-    const workloadName = msg.match[1];
-    const imageName    = msg.match[2];
-    const imageTag     = msg.match[3];
+    const ns           = msg.match[1];
+    const workloadName = msg.match[2];
+    const imageName    = msg.match[3];
+    const imageTag     = msg.match[4];
 
-    const workloadPath = `${ns}:deployment/${workloadName}`;
-    const fullImagePath = `${ecrPrefix}/${imageName}:${imageTag}`;
+    const workloadPath  = `${ns}:deployment/${workloadName}`;
+    const fullImagePath = `${repoPrefix}/${imageName}:${imageTag}`;
 
     const args = ["release","--k8s-fwd-ns=flux", `-n ${ns}`, `--workload=${workloadPath}`, `--update-image=${fullImagePath}`];
 
@@ -139,12 +141,10 @@ module.exports = function(robot) {
     const cmd = this.spawn("fluxctl", args);
 
     cmd.stdout.on('data', data => {
-      console.out("in stdout")
       msg.send(data)
     });
 
     cmd.stderr.on('data', data => {
-      console.out("in stderr")
       msg.send(data)
     });
 
