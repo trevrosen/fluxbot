@@ -69,21 +69,43 @@ module.exports = function(robot) {
   });
 
   //
-  // List images for workloads in the applications namespace
+  // List images for workloads in the given namespace
   //
-  robot.respond(/images/i, function(msg) {
-    const ns = !process.env.APPLICATION_NAMESPACE ? "applications" : process.env.APPLICATION_NAMESPACE;
+  robot.respond(/images\s*(\w+)?$/i, function(msg) {
+    args =  ["--k8s-fwd-ns=flux", "list-images"]
 
-    this.exec = require('child_process').exec;
-    const cmd = `fluxctl --k8s-fwd-ns=flux list-images -n ${ns}`;
-    msg.send(`Running [${cmd}]`);
+    var namespace = msg.match[1]
 
-    return this.exec(cmd, function(error, stdout, stderr) {
-      if (error) {
-        msg.send(error);
-        return msg.send(stderr);
-      } else {
-        return msg.send(stdout);
+    if (namespace != undefined) {
+      if (allowed_namespaces.includes(namespace)) {
+        args.push("-n")
+        args.push(`${msg.match[1]}`)
+      }else{
+        msg.send(`Namespace "${namespace}" is not managed by this Fluxbot`)
+        return
+      }    
+    }else{
+      msg.send("Usage: 'images [NAMESPACE]'")
+      return
+    }
+
+
+    this.spawn = require('child_process').spawn;
+    msg.send(`Running [${args}]`);
+
+    const cmd = this.spawn("fluxctl", args);
+
+    cmd.stdout.on('data', data => {
+      msg.send(data)
+    });
+
+    cmd.stderr.on('data', data => {
+      msg.send(data)
+    });
+
+    return cmd.on('close', function(code) {
+      if (Number(code) > 0) {
+        return msg.send(`fluxctl exited with non-zero code: ${code}`);
       }
     });
   });
