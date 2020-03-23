@@ -23,7 +23,7 @@ To allow Kubernetes admins to provide a "chat ops with guardrails" functionality
 
 ### Hubot Dev
 * This builds from the image that the stable Hubot Helm chart uses, adding `fluxctl` and our custom scripts.
-* `fluxctl` is currently vendor'd in here. That will change later.
+* `fluxctl` is downloaded in the Dockerfile. You can install it locally for dev with Homebrew or manually.
 * Yeoman install artifacts are ignored by Git, but they're part of the dev workflow. To hack on the scripts:
 	* `yo hubot` sets this up as a fully fledged Hubot project (this is done in the Dockerfile otherwise)	
 	* `bin/hubot` will put you into the "console" adapter for Hubot and allow you to run commands against the `fluxctl` bin in your $PATH against your current K8s context.
