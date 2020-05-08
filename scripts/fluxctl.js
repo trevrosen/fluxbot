@@ -34,7 +34,7 @@ module.exports = function(robot) {
   // workloads provides all workloads in the given namespace
   //
   robot.respond(/workloads\s*(\w+)?$/i, function(msg) {
-    args =  ["--k8s-fwd-ns=flux", "list-workloads"]
+    args =  ["--k8s-fwd-ns=flux", "list-workloads", "-o json"]
 
     var namespace = msg.match[1]
 
@@ -73,11 +73,31 @@ module.exports = function(robot) {
 
   });
 
+  var singleWorkloadView = `<div><h1>{{ID}}</h1>
+
+  <table>
+  <th>Containers</th>
+  {{#containers}}
+  <tr>
+    <td>{{Name}}</td>
+    <td>{{Current.ID}}</td>
+  </tr>
+  {{/containers}}
+  </table>
+  </div>
+  `
+
+  var listWorkloadsView = `<table><tr>
+  <td>{{ID}}</td>
+  <td>{{Containers}}</td>
+
+    </tr></table>`
+
   //
   // List images for workloads in the given namespace
   //
   robot.respond(/images\s*(\w+)?$/i, function(msg) {
-    args =  ["--k8s-fwd-ns=flux", "list-images"]
+    args =  ["--k8s-fwd-ns=flux", "list-images", "-o json"]
 
     var namespace = msg.match[1]
 
