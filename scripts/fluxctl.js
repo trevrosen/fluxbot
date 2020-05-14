@@ -13,6 +13,7 @@
 //
 //
 
+
 module.exports = function(robot) {
   var allowed_namespaces
   const default_namespace = "default" // not really useful
@@ -61,7 +62,7 @@ module.exports = function(robot) {
     const cmd = this.spawn("fluxctl", args);
 
     cmd.stdout.on('data', data => {
-      msg.send(listWorkloadsData(data))
+      msg.send(data)
     });
 
     cmd.stderr.on('data', data => {
