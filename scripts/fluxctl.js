@@ -11,9 +11,12 @@
 //    fluxbot images [NAMESPACE]
 //    fluxbot deploy [NAMESPACE] [DEPLOYMENT_NAME] [IMAGE_REPO_NAME] [IMAGE_TAG]
 //
+//
+
 module.exports = function(robot) {
   var allowed_namespaces
   const default_namespace = "default" // not really useful
+
 
   // All commands will respect a whitelist of namespaces from env
   if (process.env.FLUXBOT_ALLOWED_NAMESPACES) {
@@ -34,7 +37,7 @@ module.exports = function(robot) {
   // workloads provides all workloads in the given namespace
   //
   robot.respond(/workloads\s*(\w+)?$/i, function(msg) {
-    args =  ["--k8s-fwd-ns=flux", "list-workloads", "-o json"]
+    args =  ["list-workloads", "--k8s-fwd-ns=flux", "-o=json"]
 
     var namespace = msg.match[1]
 
@@ -58,7 +61,7 @@ module.exports = function(robot) {
     const cmd = this.spawn("fluxctl", args);
 
     cmd.stdout.on('data', data => {
-      msg.send(data)
+      msg.send(listWorkloadsData(data))
     });
 
     cmd.stderr.on('data', data => {
@@ -72,26 +75,6 @@ module.exports = function(robot) {
     });
 
   });
-
-  var singleWorkloadView = `<div><h1>{{ID}}</h1>
-
-  <table>
-  <th>Containers</th>
-  {{#containers}}
-  <tr>
-    <td>{{Name}}</td>
-    <td>{{Current.ID}}</td>
-  </tr>
-  {{/containers}}
-  </table>
-  </div>
-  `
-
-  var listWorkloadsView = `<table><tr>
-  <td>{{ID}}</td>
-  <td>{{Containers}}</td>
-
-    </tr></table>`
 
   //
   // List images for workloads in the given namespace

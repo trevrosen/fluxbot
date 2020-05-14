@@ -68,7 +68,7 @@ var listWorkloadTmpl = `
 
 var listContainerTmpl = `<li><strong>{{Name}}:</strong> {{Current.ID}}</li>`
 
-function listWorkloads(workloadList){
+function listWorkloadsData(workloadList){
     var view = {
       workloads: workloadList
     }
@@ -82,5 +82,5 @@ function listWorkloads(workloadList){
 };
 
 module.exports = {
-  listWorkloads: listWorkloads
+  listWorkloadsData: listWorkloadsData
 }
