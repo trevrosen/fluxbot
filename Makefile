@@ -6,9 +6,11 @@ robot_description:="A Hubot to control FluxCD"
 # Namespaces that Fluxbot will allow commands to
 allowed_namespaces:="demo,applications"
 
+flux_forward_namespace:="flux"
+
 .PHONY: run-local
 run-local:
-	FLUXBOT_ALLOWED_NAMESPACES=$(allowed_namespaces) ./bin/hubot
+	FLUX_FORWARD_NAMESPACE=$(flux_forward_namespace) FLUXBOT_ALLOWED_NAMESPACES=$(allowed_namespaces) ./bin/hubot
 
 build_and_run: build
 build_and_run: run

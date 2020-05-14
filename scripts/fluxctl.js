@@ -19,11 +19,18 @@ module.exports = function(robot) {
   const default_namespace = "default" // not really useful
 
 
-  // All commands will respect a whitelist of namespaces from env
+  // FLUXBOT_ALLOWED_NAMESPACES must be set so that commands will execute against only a whitelist of namespaces
   if (process.env.FLUXBOT_ALLOWED_NAMESPACES) {
     allowed_namespaces = process.env.FLUXBOT_ALLOWED_NAMESPACES.split(',')
   }else{
-    allowed_namespaces = default_namespace
+    console.log("FLUXBOT_ALLOWED_NAMESPACES is not set, exiting")
+    process.exit(1)
+  }
+
+  // FLUX_FORWARD_NAMESPACE must be set so that this bot knows how to talk to its Flux
+  if (!process.env.FLUX_FORWARD_NAMESPACE) {
+    console.log("FLUX_FORWARD_NAMESPACE is not set, exiting")
+    process.exit(1)
   }
 
 
@@ -38,7 +45,7 @@ module.exports = function(robot) {
   // workloads provides all workloads in the given namespace
   //
   robot.respond(/workloads\s*(\w+)?$/i, function(msg) {
-    args =  ["list-workloads", "--k8s-fwd-ns=flux", "-o=json"]
+    args =  ["list-workloads"]
 
     var namespace = msg.match[1]
 
@@ -81,7 +88,7 @@ module.exports = function(robot) {
   // List images for workloads in the given namespace
   //
   robot.respond(/images\s*(\w+)?$/i, function(msg) {
-    args =  ["--k8s-fwd-ns=flux", "list-images", "-o json"]
+    args =  ["list-images"]
 
     var namespace = msg.match[1]
 
@@ -136,7 +143,7 @@ module.exports = function(robot) {
     const workloadPath  = `${ns}:deployment/${workloadName}`;
     const fullImagePath = `${repoPrefix}/${imageName}:${imageTag}`;
 
-    const args = ["release","--k8s-fwd-ns=flux", `-n ${ns}`, `--workload=${workloadPath}`, `--update-image=${fullImagePath}`];
+    const args = ["release", `-n ${ns}`, `--workload=${workloadPath}`, `--update-image=${fullImagePath}`];
 
     this.spawn = require('child_process').spawn;
 
